@@ -13,3 +13,8 @@ Usage:
       -r, --remote  remove merged branches
       -l, --local   Remove local branches
       -a, --all     Removes both local and remote merged branches
+
+LICENSE:
+========
+
+The mighty MIT license. Please check `LICENSE` for more details.
