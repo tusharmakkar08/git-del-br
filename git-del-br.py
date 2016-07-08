@@ -1,4 +1,5 @@
 import argparse
+import os
 
 __author__ = 'tusharmakkar08'
 
@@ -13,14 +14,15 @@ def delete_local_merged_branches(branches):
     pass
 
 
-def get_remote_merged_branches(branch_name):
+def get_remote_merged_branches(branch_name, remote_flag):
     print "getting remote merged branches", branch_name
-    return []
-
-
-def get_local_merged_branches(branch_name):
-    print "getting remote merged branches", branch_name
-    return []
+    remote_var = ''
+    if remote_flag:
+        remote_var = '-r'
+    cmd = 'git branch ' + remote_var + ' --merged ' + branch_name + \
+          """ | grep -v "\*" | grep -v master | xargs -L1 | awk '{split($0,a,"/"); print a[2]}'"""
+    answer = os.popen(cmd).read()
+    return [i.strip() for i in answer.split('\n') if i]
 
 
 def filter_time(branches, time_to_remove):
@@ -30,24 +32,25 @@ def filter_time(branches, time_to_remove):
 
 def filter_suffix(branches, suffix):
     print "filtering on basis of suffix", branches, suffix
-    return []
+    return [branch for branch in branches if branch.endswith(suffix)]
 
 
 def filter_prefix(branches, prefix):
     print "filtering on basis of prefix", prefix, branches
-    return []
+    return [branch for branch in branches if branch.startswith(prefix)]
 
 
 def view_and_delete_branches(list_flag, branch_name, prefix, suffix, remote_flag, local_flag, time_to_remove):
     if remote_flag:
         branches_to_remove = filter_time(
-            filter_suffix(filter_prefix(get_remote_merged_branches(branch_name), prefix), suffix), time_to_remove)
+            filter_suffix(filter_prefix(get_remote_merged_branches(branch_name, remote_flag), prefix), suffix),
+            time_to_remove)
         print "viewing remote", branches_to_remove
         if not list_flag:
             delete_remote_merged_branches(branches_to_remove)
     if local_flag:
         branches_to_remove = filter_time(
-            filter_suffix(filter_prefix(get_local_merged_branches(branch_name), prefix), suffix), time_to_remove)
+            filter_suffix(filter_prefix(get_remote_merged_branches(branch_name), prefix), suffix), time_to_remove)
         print "viewing local", branches_to_remove
         if not list_flag:
             delete_local_merged_branches(branches_to_remove)
