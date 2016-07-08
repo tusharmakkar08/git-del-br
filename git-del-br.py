@@ -3,14 +3,54 @@ import argparse
 __author__ = 'tusharmakkar08'
 
 
-def delete_remote_merged_branches():
-    print "remote"
+def delete_remote_merged_branches(branches):
+    print "deleting remote", branches
     pass
 
 
-def delete_local_merged_branches():
-    print "local"
+def delete_local_merged_branches(branches):
+    print "deleting local", branches
     pass
+
+
+def get_remote_merged_branches(branch_name):
+    print "getting remote merged branches", branch_name
+    return []
+
+
+def get_local_merged_branches(branch_name):
+    print "getting remote merged branches", branch_name
+    return []
+
+
+def filter_time(branches, time_to_remove):
+    print "filtering on basis of time", branches, time_to_remove
+    return []
+
+
+def filter_suffix(branches, suffix):
+    print "filtering on basis of suffix", branches, suffix
+    return []
+
+
+def filter_prefix(branches, prefix):
+    print "filtering on basis of prefix", prefix, branches
+    return []
+
+
+def view_and_delete_branches(list_flag, branch_name, prefix, suffix, remote_flag, local_flag, time_to_remove):
+    if remote_flag:
+        branches_to_remove = filter_time(
+            filter_suffix(filter_prefix(get_remote_merged_branches(branch_name), prefix), suffix), time_to_remove)
+        print "viewing remote", branches_to_remove
+        if not list_flag:
+            delete_remote_merged_branches(branches_to_remove)
+    if local_flag:
+        branches_to_remove = filter_time(
+            filter_suffix(filter_prefix(get_local_merged_branches(branch_name), prefix), suffix), time_to_remove)
+        print "viewing local", branches_to_remove
+        if not list_flag:
+            delete_local_merged_branches(branches_to_remove)
 
 
 def _get_parser():
@@ -19,12 +59,23 @@ def _get_parser():
     :return:
     """
     parser = argparse.ArgumentParser(description='Tool for deleting remote and local merged branches from Git')
+    parser.add_argument('-ls', '--list', action='store_true',
+                        help='Lists the branches (not delete)')
     parser.add_argument('-r', '--remote', action='store_true',
                         help='remove merged branches')
     parser.add_argument('-l', '--local', action='store_true',
                         help='Remove local branches')
     parser.add_argument('-a', '--all', action='store_true',
                         help='Removes both local and remote merged branches')
+    parser.add_argument('-t', '--time', metavar='time', type=int, default=-1,
+                        help='Lists all branches after t-time which the branch is merged and not changed (in days) '
+                             'default = -1 means infinite days')
+    parser.add_argument('-br', '--branch', metavar='branch', type=str, default='master',
+                        help='Branch from which other branches will be analysed (default = master)')
+    parser.add_argument('-pre', '--prefix', metavar='prefix', type=str, default='',
+                        help='Filter branches based on prefix')
+    parser.add_argument('-suf', '--suffix', metavar='suffix', type=str, default='',
+                        help='Filter branches based on suffix')
     return parser
 
 
@@ -39,10 +90,8 @@ def command_line_runner():
         args['remote'] = True
         args['local'] = True
     if any([args['remote'], args['local']]):
-        if args['remote']:
-            delete_remote_merged_branches()
-        if args['local']:
-            delete_local_merged_branches()
+        view_and_delete_branches(args['list'], args['branch'], args['prefix'], args['suffix'],
+                                 args['remote'], args['local'], args['time'])
     else:
         parser.print_help()
     return
