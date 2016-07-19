@@ -7,7 +7,7 @@ setup(
     name="git-del-br",
 
     # Version number:
-    version="1.0.1",
+    version="1.0.2",
 
     # Application author details:
     author="Tushar Makkar",
@@ -30,7 +30,7 @@ setup(
     # license="LICENSE.txt",
     description="Git delete merged branches",
 
-    long_description=open("README.md").read(),
+    long_description=open("README.rst").read(),
 
     entry_points={
         'console_scripts': [
