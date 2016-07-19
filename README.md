@@ -26,6 +26,11 @@ Usage:
                                     Filter branches based on suffix
 
 
+INSTALL:
+========
+
+You can install this from pip using `pip install git-del-br`.
+
 LICENSE:
 ========
 
