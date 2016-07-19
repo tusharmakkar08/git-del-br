@@ -38,7 +38,10 @@ def get_merged_branches(branch_name, remote_flag=False):
         remote_var = '-r'
     cmd = 'git branch ' + remote_var + ' --merged ' + branch_name + """ | grep -v "\*" | grep -v master"""
     answer = os.popen(cmd).read()
-    return [i.strip() for i in answer.split('\n') if i]
+    if remote_flag:
+        return [''.join(branch.split('origin/')[1:]) for branch in [i.strip() for i in answer.split('\n') if i]]
+    else:
+        return [i.strip() for i in answer.split('\n') if i]
 
 
 def filter_time(branches, time_to_remove):
@@ -76,7 +79,6 @@ def view_and_delete_branches(list_flag, branch_name, prefix, suffix, remote_flag
         branches_to_remove = filter_time(
             filter_suffix(filter_prefix(get_merged_branches(branch_name, remote_flag), prefix), suffix),
             time_to_remove)
-        branches_to_remove = [''.join(branch.split('origin/')[1:]) for branch in branches_to_remove]
         logger.debug("Viewing remote %s delete flag %s", branches_to_remove, not list_flag)
         _print_branches(branches_to_remove)
         if not list_flag:
