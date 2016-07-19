@@ -4,7 +4,7 @@ Deleting Merged Branches
 Usage:
 ======
 
-            usage: git_del_br [-h] [-ls] [-r] [-l] [-a] [-t time] [-br branch]
+            usage: git-del-br [-h] [-ls] [-r] [-l] [-a] [-t time] [-br branch]
                                  [-pre prefix] [-suf suffix]
             
             Tool for deleting remote and local merged branches from Git
