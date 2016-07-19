@@ -17,7 +17,7 @@ logger.setLevel(logging.DEBUG)
 def delete_remote_merged_branches(branches):
     logger.debug("Deleting remote branches %s", branches)
     for branch in branches:
-        cmd = 'git push origin --delete ' + ''.join(branch.split('origin/')[1:])
+        cmd = 'git push origin --delete ' + branch
         answer = os.popen(cmd).read()
         logger.debug("%s", answer)
     pass
@@ -69,13 +69,16 @@ def view_and_delete_branches(list_flag, branch_name, prefix, suffix, remote_flag
         branches_to_remove = filter_time(
             filter_suffix(filter_prefix(get_merged_branches(branch_name, remote_flag), prefix), suffix),
             time_to_remove)
+        branches_to_remove = [''.join(branch.split('origin/')[1:]) for branch in branches_to_remove]
         logger.debug("Viewing remote %s delete flag %s", branches_to_remove, not list_flag)
+        print("Branches to be removed:\n- " + '\n- '.join(branches_to_remove))
         if not list_flag:
             delete_remote_merged_branches(branches_to_remove)
     if local_flag:
         branches_to_remove = filter_time(
             filter_suffix(filter_prefix(get_merged_branches(branch_name), prefix), suffix), time_to_remove)
         logger.debug("Viewing local branches %s delete flag %s", branches_to_remove, not list_flag)
+        print("Branches to be removed:\n- " + '\n- '.join(branches_to_remove))
         if not list_flag:
             delete_local_merged_branches(branches_to_remove)
 
