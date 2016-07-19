@@ -21,7 +21,10 @@ def delete_remote_merged_branches(branches):
 
 def delete_local_merged_branches(branches):
     logger.debug("Deleting local branches %s", branches)
-    pass
+    for branch in branches:
+        cmd = 'git branch -D ' + branch
+        answer = os.popen(cmd).read()
+        logger.debug("%s", answer)
 
 
 def get_merged_branches(branch_name, remote_flag=False):
