@@ -1,57 +1,74 @@
 import argparse
+import logging
 import os
+import time
 
 __author__ = 'tusharmakkar08'
 
+logger = logging.getLogger('git-del-br')
+FORMAT = "%(asctime)-15s:@%(lineno)s %(message)s"
+formatter = logging.Formatter(FORMAT)
+file_handler = logging.FileHandler("git-del-br.log")
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
+logger.setLevel(logging.DEBUG)
+
 
 def delete_remote_merged_branches(branches):
-    print "deleting remote", branches
+    logger.debug("Deleting remote branches %s", branches)
     pass
 
 
 def delete_local_merged_branches(branches):
-    print "deleting local", branches
+    logger.debug("Deleting local branches %s", branches)
     pass
 
 
-def get_remote_merged_branches(branch_name, remote_flag):
-    print "getting remote merged branches", branch_name
+def get_merged_branches(branch_name, remote_flag=False):
+    logger.debug("Getting Merged Branches %s %s", branch_name, remote_flag)
     remote_var = ''
     if remote_flag:
         remote_var = '-r'
-    cmd = 'git branch ' + remote_var + ' --merged ' + branch_name + \
-          """ | grep -v "\*" | grep -v master | xargs -L1 | awk '{split($0,a,"/"); print a[2]}'"""
+    cmd = 'git branch ' + remote_var + ' --merged ' + branch_name + """ | grep -v "\*" | grep -v master"""
     answer = os.popen(cmd).read()
     return [i.strip() for i in answer.split('\n') if i]
 
 
 def filter_time(branches, time_to_remove):
-    print "filtering on basis of time", branches, time_to_remove
-    return []
+    logger.debug("Filtering on basis of time %s time %s", branches, time_to_remove)
+    if time_to_remove == -1:
+        return branches
+    filtered_branches = []
+    for branch in branches:
+        cmd = 'echo `git show --format="%ct" ' + branch + '| head -n 1`;'
+        answer = os.popen(cmd).read()
+        if (int(time.time()) - int(answer)) / 86400 > time_to_remove:
+            filtered_branches.append(branches)
+    return filtered_branches
 
 
 def filter_suffix(branches, suffix):
-    print "filtering on basis of suffix", branches, suffix
+    logger.debug("Filtering on basis of suffix %s suffix %s", branches, suffix)
     return [branch for branch in branches if branch.endswith(suffix)]
 
 
 def filter_prefix(branches, prefix):
-    print "filtering on basis of prefix", prefix, branches
+    logger.debug("Filtering on basis of prefix %s prefix %s", branches, prefix)
     return [branch for branch in branches if branch.startswith(prefix)]
 
 
 def view_and_delete_branches(list_flag, branch_name, prefix, suffix, remote_flag, local_flag, time_to_remove):
     if remote_flag:
         branches_to_remove = filter_time(
-            filter_suffix(filter_prefix(get_remote_merged_branches(branch_name, remote_flag), prefix), suffix),
+            filter_suffix(filter_prefix(get_merged_branches(branch_name, remote_flag), prefix), suffix),
             time_to_remove)
-        print "viewing remote", branches_to_remove
+        logger.debug("Viewing remote %s delete flag %s", branches_to_remove, list_flag)
         if not list_flag:
             delete_remote_merged_branches(branches_to_remove)
     if local_flag:
         branches_to_remove = filter_time(
-            filter_suffix(filter_prefix(get_remote_merged_branches(branch_name), prefix), suffix), time_to_remove)
-        print "viewing local", branches_to_remove
+            filter_suffix(filter_prefix(get_merged_branches(branch_name), prefix), suffix), time_to_remove)
+        logger.debug("Viewing local branches %s delete flag %s", branches_to_remove, list_flag)
         if not list_flag:
             delete_local_merged_branches(branches_to_remove)
 
@@ -71,7 +88,7 @@ def _get_parser():
     parser.add_argument('-a', '--all', action='store_true',
                         help='Removes both local and remote merged branches')
     parser.add_argument('-t', '--time', metavar='time', type=int, default=-1,
-                        help='Lists all branches after t-time which the branch is merged and not changed (in days) '
+                        help='All branches after t-time which the branch is merged (in days) '
                              'default = -1 means infinite days')
     parser.add_argument('-br', '--branch', metavar='branch', type=str, default='master',
                         help='Branch from which other branches will be analysed (default = master)')
@@ -102,3 +119,4 @@ def command_line_runner():
 
 if __name__ == '__main__':
     command_line_runner()
+    logger.debug("\n=============\n")
