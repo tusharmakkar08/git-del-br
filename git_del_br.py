@@ -44,16 +44,19 @@ def get_merged_branches(branch_name, remote_flag=False):
         return [i.strip() for i in answer.split('\n') if i]
 
 
-def filter_time(branches, time_to_remove):
-    logger.debug("Filtering on basis of time %s time %s", branches, time_to_remove)
+def filter_time(branches, time_to_remove, remote_flag):
+    logger.debug("Filtering on basis of time %s time %s and remote %s", branches, time_to_remove, remote_flag)
     if time_to_remove == -1:
         return branches
     filtered_branches = []
     for branch in branches:
-        cmd = 'echo `git show --format="%ct" ' + branch + '| head -n 1`;'
+        if remote_flag:
+            cmd = 'echo `git show --format="%ct" ' + 'origin/' + branch + ' | head -n 1`; 2> /dev/null'
+        else:
+            cmd = 'echo `git show --format="%ct" ' + branch + ' | head -n 1`; 2> /dev/null'
         answer = os.popen(cmd).read()
         if (int(time.time()) - int(answer)) / 86400 > time_to_remove:
-            filtered_branches.append(branches)
+            filtered_branches.append(branch)
     return filtered_branches
 
 
@@ -78,14 +81,14 @@ def view_and_delete_branches(list_flag, branch_name, prefix, suffix, remote_flag
     if remote_flag:
         branches_to_remove = filter_time(
             filter_suffix(filter_prefix(get_merged_branches(branch_name, remote_flag), prefix), suffix),
-            time_to_remove)
+            time_to_remove, remote_flag)
         logger.debug("Viewing remote %s delete flag %s", branches_to_remove, not list_flag)
         _print_branches(branches_to_remove)
         if not list_flag:
             delete_remote_merged_branches(branches_to_remove)
     if local_flag:
         branches_to_remove = filter_time(
-            filter_suffix(filter_prefix(get_merged_branches(branch_name), prefix), suffix), time_to_remove)
+            filter_suffix(filter_prefix(get_merged_branches(branch_name), prefix), suffix), time_to_remove, remote_flag)
         logger.debug("Viewing local branches %s delete flag %s", branches_to_remove, not list_flag)
         _print_branches(branches_to_remove)
         if not list_flag:
