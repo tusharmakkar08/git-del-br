@@ -7,7 +7,7 @@ setup(
     name="git-del-br",
 
     # Version number:
-    version="0.0.1",
+    version="1.0",
 
     # Application author details:
     author="Tushar Makkar",
