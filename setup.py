@@ -1,10 +1,6 @@
 __author__ = 'tusharmakkar08'
 
-from pip.req import parse_requirements
 from setuptools import setup
-
-# install_reqs = parse_requirements('requirements.txt', session=False)
-# install_requirement = [str(ir.req) for ir in install_reqs]
 
 setup(
     # Application name:
@@ -18,7 +14,7 @@ setup(
     author_email="tusharmakkar08@gmail.com",
 
     # Packages
-    py_modules=['fb_search'],
+    py_modules=['git_del_br'],
 
     package_data={'': ['*.md']},
 
@@ -38,11 +34,8 @@ setup(
 
     entry_points={
         'console_scripts': [
-            'git-del-br = git-del-br:command_line_runner',
+            'git-del-br=git_del_br:command_line_runner',
         ]
     },
-
-    # Dependent packages (distributions)
-    # install_requires=install_requirement,
 
 )

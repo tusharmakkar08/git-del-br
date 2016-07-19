@@ -5,10 +5,10 @@ import time
 
 __author__ = 'tusharmakkar08'
 
-logger = logging.getLogger('git-del-br')
+logger = logging.getLogger('git_del_br')
 FORMAT = "%(asctime)-15s:@%(lineno)s %(message)s"
 formatter = logging.Formatter(FORMAT)
-file_handler = logging.FileHandler("git-del-br.log")
+file_handler = logging.FileHandler("git_del_br.log")
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 logger.setLevel(logging.DEBUG)
@@ -64,6 +64,13 @@ def filter_prefix(branches, prefix):
     return [branch for branch in branches if branch.startswith(prefix)]
 
 
+def _print_branches(branches_to_remove):
+    if len(branches_to_remove):
+        print(str(len(branches_to_remove)) + " branches to be removed:\n- " + '\n- '.join(branches_to_remove))
+    else:
+        print("Your repository is clean. No branch to remove :)")
+
+
 def view_and_delete_branches(list_flag, branch_name, prefix, suffix, remote_flag, local_flag, time_to_remove):
     if remote_flag:
         branches_to_remove = filter_time(
@@ -71,14 +78,14 @@ def view_and_delete_branches(list_flag, branch_name, prefix, suffix, remote_flag
             time_to_remove)
         branches_to_remove = [''.join(branch.split('origin/')[1:]) for branch in branches_to_remove]
         logger.debug("Viewing remote %s delete flag %s", branches_to_remove, not list_flag)
-        print("Branches to be removed:\n- " + '\n- '.join(branches_to_remove))
+        _print_branches(branches_to_remove)
         if not list_flag:
             delete_remote_merged_branches(branches_to_remove)
     if local_flag:
         branches_to_remove = filter_time(
             filter_suffix(filter_prefix(get_merged_branches(branch_name), prefix), suffix), time_to_remove)
         logger.debug("Viewing local branches %s delete flag %s", branches_to_remove, not list_flag)
-        print("Branches to be removed:\n- " + '\n- '.join(branches_to_remove))
+        _print_branches(branches_to_remove)
         if not list_flag:
             delete_local_merged_branches(branches_to_remove)
 
