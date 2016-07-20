@@ -1,4 +1,10 @@
 # git-del-br
+
+[![GitHub issues](https://img.shields.io/github/issues/tusharmakkar08/git-del-br.svg)](https://github.com/tusharmakkar08/git-del-br/issues)
+[![GitHub stars](https://img.shields.io/github/stars/tusharmakkar08/git-del-br.svg)](https://github.com/tusharmakkar08/git-del-br/stargazers)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/tusharmakkar08/git-del-br/master/LICENSE)
+[![PyPI](https://img.shields.io/pypi/v/git-del-br.svg?maxAge=2592000)](https://pypi.python.org/pypi/git-del-br)
+
 Deleting Merged Branches 
 
 Usage:
