@@ -31,6 +31,24 @@ Usage:
               -suf suffix, --suffix suffix
                                     Filter branches based on suffix
 
+Examples:
+==========
+
+* For listing remote merged branches which haven't been touched since past 3 months (last commit was 3 months ago)
+
+            git-del-br -ls -r -t=90
+
+  For deleting those branches
+
+            git-del-br -r -t=90
+
+* For listing local branches which start with `dev` prefix
+
+            git-del-br -ls -l -pre='dev'
+
+  For deleting those branches
+
+            git-del-br -l -pre='dev'
 
 INSTALL:
 ========
