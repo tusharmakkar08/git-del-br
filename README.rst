@@ -1,6 +1,8 @@
 git-del-br
 ==========
 
+|GitHub issues| |GitHub stars| |GitHub license| |PyPI|
+
 Deleting Merged Branches
 
 Usage:
@@ -10,9 +12,9 @@ Usage:
 
             usage: git-del-br [-h] [-ls] [-r] [-l] [-a] [-t time] [-br branch]
                                  [-pre prefix] [-suf suffix]
-
+            
             Tool for deleting remote and local merged branches from Git
-
+            
             optional arguments:
               -h, --help            show this help message and exit
               -ls, --list           Lists the branches (not delete)
@@ -29,6 +31,34 @@ Usage:
               -suf suffix, --suffix suffix
                                     Filter branches based on suffix
 
+Examples:
+=========
+
+-  For listing remote merged branches which haven’t been touched since
+   past 3 months (last commit was 3 months ago)
+
+   ::
+
+           git-del-br -ls -r -t=90
+
+For deleting those branches
+
+::
+
+            git-del-br -r -t=90
+
+-  For listing local branches which start with ``dev`` prefix
+
+   ::
+
+           git-del-br -ls -l -pre='dev'
+
+For deleting those branches
+
+::
+
+            git-del-br -l -pre='dev'
+
 INSTALL:
 ========
 
@@ -38,3 +68,12 @@ LICENSE:
 ========
 
 The mighty MIT license. Please check ``LICENSE`` for more details.
+
+.. |GitHub issues| image:: https://img.shields.io/github/issues/tusharmakkar08/git-del-br.svg
+   :target: https://github.com/tusharmakkar08/git-del-br/issues
+.. |GitHub stars| image:: https://img.shields.io/github/stars/tusharmakkar08/git-del-br.svg
+   :target: https://github.com/tusharmakkar08/git-del-br/stargazers
+.. |GitHub license| image:: https://img.shields.io/badge/license-MIT-blue.svg
+   :target: https://raw.githubusercontent.com/tusharmakkar08/git-del-br/master/LICENSE
+.. |PyPI| image:: https://img.shields.io/pypi/v/git-del-br.svg?maxAge=2592000
+   :target: https://pypi.python.org/pypi/git-del-br
