@@ -112,7 +112,7 @@ def _get_parser():
     parser.add_argument('-t', '--time', metavar='time', type=int, default=-1,
                         help='All branches after t-time which the branch is merged (in days) '
                              'default = -1 means infinite days')
-    parser.add_argument('-br', '--branch', metavar='branch', type=str, default='master',
+    parser.add_argument('-br', '--branch', metavar='branch', type=str,
                         help='Branch from which other branches will be analysed (default = master)')
     parser.add_argument('-pre', '--prefix', metavar='prefix', type=str, default='',
                         help='Filter branches based on prefix')
@@ -132,6 +132,9 @@ def command_line_runner():
         args['remote'] = True
         args['local'] = True
     if any([args['remote'], args['local']]):
+        if not args['branch']:
+            cmd = 'git branch | grep \* | cut -d \' \' -f2'
+            args['branch'] = os.popen(cmd).read().strip()
         view_and_delete_branches(args['list'], args['branch'], args['prefix'], args['suffix'],
                                  args['remote'], args['local'], args['time'])
     else:
