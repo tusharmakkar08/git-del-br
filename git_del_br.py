@@ -113,7 +113,7 @@ def _get_parser():
                         help='All branches after t-time which the branch is merged (in days) '
                              'default = -1 means infinite days')
     parser.add_argument('-br', '--branch', metavar='branch', type=str,
-                        help='Branch from which other branches will be analysed (default = master)')
+                        help='Branch from which other branches will be analysed (default = current_branch)')
     parser.add_argument('-pre', '--prefix', metavar='prefix', type=str, default='',
                         help='Filter branches based on prefix')
     parser.add_argument('-suf', '--suffix', metavar='suffix', type=str, default='',

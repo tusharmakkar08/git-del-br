@@ -25,7 +25,7 @@ Usage:
                                     (in days) default = -1 means infinite days
               -br branch, --branch branch
                                     Branch from which other branches will be analysed
-                                    (default = master)
+                                    (default = current_branch)
               -pre prefix, --prefix prefix
                                     Filter branches based on prefix
               -suf suffix, --suffix suffix
