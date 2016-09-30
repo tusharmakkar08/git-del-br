@@ -5,34 +5,44 @@ import time
 
 __author__ = 'tusharmakkar08'
 
-logger = logging.getLogger('git_del_br')
-FORMAT = "%(asctime)-15s:@%(lineno)s %(message)s"
-formatter = logging.Formatter(FORMAT)
-file_handler = logging.FileHandler("git_del_br.log")
-file_handler.setFormatter(formatter)
-logger.addHandler(file_handler)
-logger.setLevel(logging.DEBUG)
+DEBUG = os.environ.get('DEBUG')
+if DEBUG is not None:
+    DEBUG = int(DEBUG)
+
+if DEBUG:
+    logger = logging.getLogger('git_del_br')
+    FORMAT = "%(asctime)-15s:@%(lineno)s %(message)s"
+    formatter = logging.Formatter(FORMAT)
+    file_handler = logging.FileHandler("git_del_br.log")
+    file_handler.setFormatter(formatter)
+    logger.addHandler(file_handler)
+    logger.setLevel(logging.DEBUG)
 
 
 def delete_remote_merged_branches(branches):
-    logger.debug("Deleting remote branches %s", branches)
+    if DEBUG:
+        logger.debug("Deleting remote branches %s", branches)
     for branch in branches:
         cmd = 'git push origin --delete ' + branch
         answer = os.popen(cmd).read()
-        logger.debug("%s", answer)
+        if DEBUG:
+            logger.debug("%s", answer)
     pass
 
 
 def delete_local_merged_branches(branches):
-    logger.debug("Deleting local branches %s", branches)
+    if DEBUG:
+        logger.debug("Deleting local branches %s", branches)
     for branch in branches:
         cmd = 'git branch -D ' + branch
         answer = os.popen(cmd).read()
-        logger.debug("%s", answer)
+        if DEBUG:
+            logger.debug("%s", answer)
 
 
 def get_merged_branches(branch_name, remote_flag=False):
-    logger.debug("Getting Merged Branches %s %s", branch_name, remote_flag)
+    if DEBUG:
+        logger.debug("Getting Merged Branches %s %s", branch_name, remote_flag)
     remote_var = ''
     if remote_flag:
         remote_var = '-r'
@@ -45,7 +55,8 @@ def get_merged_branches(branch_name, remote_flag=False):
 
 
 def filter_time(branches, time_to_remove, remote_flag):
-    logger.debug("Filtering on basis of time %s time %s and remote %s", branches, time_to_remove, remote_flag)
+    if DEBUG:
+        logger.debug("Filtering on basis of time %s time %s and remote %s", branches, time_to_remove, remote_flag)
     if time_to_remove == -1:
         return branches
     filtered_branches = []
@@ -61,12 +72,14 @@ def filter_time(branches, time_to_remove, remote_flag):
 
 
 def filter_suffix(branches, suffix):
-    logger.debug("Filtering on basis of suffix %s suffix %s", branches, suffix)
+    if DEBUG:
+        logger.debug("Filtering on basis of suffix %s suffix %s", branches, suffix)
     return [branch for branch in branches if branch.endswith(suffix)]
 
 
 def filter_prefix(branches, prefix):
-    logger.debug("Filtering on basis of prefix %s prefix %s", branches, prefix)
+    if DEBUG:
+        logger.debug("Filtering on basis of prefix %s prefix %s", branches, prefix)
     return [branch for branch in branches if branch.startswith(prefix)]
 
 
@@ -82,14 +95,16 @@ def view_and_delete_branches(list_flag, branch_name, prefix, suffix, remote_flag
         branches_to_remove = filter_time(
             filter_suffix(filter_prefix(get_merged_branches(branch_name, remote_flag), prefix), suffix),
             time_to_remove, remote_flag)
-        logger.debug("Viewing remote %s delete flag %s", branches_to_remove, not list_flag)
+        if DEBUG:
+            logger.debug("Viewing remote %s delete flag %s", branches_to_remove, not list_flag)
         _print_branches(branches_to_remove)
         if not list_flag:
             delete_remote_merged_branches(branches_to_remove)
     if local_flag:
         branches_to_remove = filter_time(
             filter_suffix(filter_prefix(get_merged_branches(branch_name), prefix), suffix), time_to_remove, remote_flag)
-        logger.debug("Viewing local branches %s delete flag %s", branches_to_remove, not list_flag)
+        if DEBUG:
+            logger.debug("Viewing local branches %s delete flag %s", branches_to_remove, not list_flag)
         _print_branches(branches_to_remove)
         if not list_flag:
             delete_local_merged_branches(branches_to_remove)
@@ -144,4 +159,5 @@ def command_line_runner():
 
 if __name__ == '__main__':
     command_line_runner()
-    logger.debug("\n=============\n")
+    if DEBUG:
+        logger.debug("\n=============\n")
