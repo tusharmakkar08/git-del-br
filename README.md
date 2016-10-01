@@ -55,6 +55,11 @@ INSTALL:
 
 You can install this from pip using `pip install git-del-br`.
 
+CONTRIBUTION:
+============
+
+Fork the project. Create a branch from `master` or `gh-pages` and submit a PR to the same. 
+
 LICENSE:
 ========
 
