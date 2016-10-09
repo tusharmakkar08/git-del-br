@@ -31,6 +31,8 @@ Usage:
               -suf suffix, --suffix suffix
                                     Filter branches based on suffix
 
+You can find more details about the project [here](http://tusharmakkar08.github.io/git-del-br).
+
 Examples:
 ==========
 

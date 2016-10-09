@@ -31,6 +31,8 @@ Usage:
               -suf suffix, --suffix suffix
                                     Filter branches based on suffix
 
+You can find more details about the project `here`_.
+
 Examples:
 =========
 
@@ -64,10 +66,18 @@ INSTALL:
 
 You can install this from pip using ``pip install git-del-br``.
 
+CONTRIBUTION:
+=============
+
+Fork the project. Create a branch from ``master`` or ``gh-pages`` and
+submit a PR to the same.
+
 LICENSE:
 ========
 
 The mighty MIT license. Please check ``LICENSE`` for more details.
+
+.. _here: http://tusharmakkar08.github.io/git-del-br
 
 .. |GitHub issues| image:: https://img.shields.io/github/issues/tusharmakkar08/git-del-br.svg
    :target: https://github.com/tusharmakkar08/git-del-br/issues
