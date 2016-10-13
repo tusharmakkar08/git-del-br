@@ -152,6 +152,12 @@ def command_line_runner():
             args['branch'] = os.popen(cmd).read().strip()
         view_and_delete_branches(args['list'], args['branch'], args['prefix'], args['suffix'],
                                  args['remote'], args['local'], args['time'])
+    elif args['list']:
+        if not args['branch']:
+            cmd = 'git branch | grep \* | cut -d \' \' -f2'
+            args['branch'] = os.popen(cmd).read().strip()
+        view_and_delete_branches(args['list'], args['branch'], args['prefix'], args['suffix'],
+                                 1, 1, args['time'])
     else:
         parser.print_help()
     return
