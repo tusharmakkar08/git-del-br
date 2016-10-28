@@ -83,9 +83,10 @@ def filter_prefix(branches, prefix):
     return [branch for branch in branches if branch.startswith(prefix)]
 
 
-def _print_branches(branches_to_remove):
+def _print_branches(branches_to_remove, type_):
     if len(branches_to_remove):
-        print(str(len(branches_to_remove)) + " branches to be removed:\n- " + '\n- '.join(branches_to_remove))
+        print(str(len(branches_to_remove)) + " " + type_ + " branches to be removed:\n- " +
+              '\n- '.join(branches_to_remove))
     else:
         print("Your repository is clean. No branch to remove :)")
 
@@ -97,7 +98,7 @@ def view_and_delete_branches(list_flag, branch_name, prefix, suffix, remote_flag
             time_to_remove, remote_flag)
         if DEBUG:
             logger.debug("Viewing remote %s delete flag %s", branches_to_remove, not list_flag)
-        _print_branches(branches_to_remove)
+        _print_branches(branches_to_remove, "remote")
         if not list_flag:
             delete_remote_merged_branches(branches_to_remove)
     if local_flag:
@@ -105,7 +106,7 @@ def view_and_delete_branches(list_flag, branch_name, prefix, suffix, remote_flag
             filter_suffix(filter_prefix(get_merged_branches(branch_name), prefix), suffix), time_to_remove, remote_flag)
         if DEBUG:
             logger.debug("Viewing local branches %s delete flag %s", branches_to_remove, not list_flag)
-        _print_branches(branches_to_remove)
+        _print_branches(branches_to_remove, "local")
         if not list_flag:
             delete_local_merged_branches(branches_to_remove)
 
