@@ -81,7 +81,7 @@ def filter_suffix(branches, suffix):
 def filter_regex(branches, regex):
     if DEBUG:
         logger.debug("Filtering on basis of regex %s regex %s", branches, regex)
-    return [branch for branch in branches if re.match(regex, branch)]
+    return [branch for branch in branches if re.search(regex, branch)]
 
 
 def filter_prefix(branches, prefix):
