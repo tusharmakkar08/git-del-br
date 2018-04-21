@@ -10,11 +10,11 @@ Deleting Merged Branches
 Usage:
 ======
 
-            usage: git-del-br [-h] [-ls] [-r] [-l] [-a] [-t time] [-br branch]
-                                 [-pre prefix] [-suf suffix]
-            
+            usage: git_del_br.py [-h] [-ls] [-r] [-l] [-a] [-t time] [-br branch]
+                     [-pre prefix] [-suf suffix] [-re regex]
+
             Tool for deleting remote and local merged branches from Git
-            
+
             optional arguments:
               -h, --help            show this help message and exit
               -ls, --list           Lists the branches (not delete)
@@ -30,6 +30,9 @@ Usage:
                                     Filter branches based on prefix
               -suf suffix, --suffix suffix
                                     Filter branches based on suffix
+              -re regex, --regex regex
+                                    Filter branches based on regex
+
 
 You can find more details about the project [here](http://tusharmakkar08.github.io/git-del-br).
 
@@ -51,6 +54,10 @@ Examples:
   For deleting those branches
 
             git-del-br -l -pre='dev'
+
+* You can use regex too. For example: For deleting all branches except `release` branch:
+
+        git-del-br -l -re='^(?!release).*'
 
 INSTALL:
 ========

@@ -1,6 +1,7 @@
 import argparse
 import logging
 import os
+import re
 import time
 
 __author__ = 'tusharmakkar08'
@@ -9,6 +10,7 @@ DEBUG = os.environ.get('DEBUG')
 if DEBUG is not None:
     DEBUG = int(DEBUG)
 
+logger = None
 if DEBUG:
     logger = logging.getLogger('git_del_br')
     FORMAT = "%(asctime)-15s:@%(lineno)s %(message)s"
@@ -27,7 +29,6 @@ def delete_remote_merged_branches(branches):
         answer = os.popen(cmd).read()
         if DEBUG:
             logger.debug("%s", answer)
-    pass
 
 
 def delete_local_merged_branches(branches):
@@ -50,8 +51,7 @@ def get_merged_branches(branch_name, remote_flag=False):
     answer = os.popen(cmd).read()
     if remote_flag:
         return [''.join(branch.split('origin/')[1:]) for branch in [i.strip() for i in answer.split('\n') if i]]
-    else:
-        return [i.strip() for i in answer.split('\n') if i]
+    return [i.strip() for i in answer.split('\n') if i]
 
 
 def filter_time(branches, time_to_remove, remote_flag):
@@ -77,35 +77,43 @@ def filter_suffix(branches, suffix):
     return [branch for branch in branches if branch.endswith(suffix)]
 
 
+def filter_regex(branches, regex):
+    if DEBUG:
+        logger.debug("Filtering on basis of regex %s regex %s", branches, regex)
+    return [branch for branch in branches if re.search(regex, branch)]
+
+
 def filter_prefix(branches, prefix):
     if DEBUG:
         logger.debug("Filtering on basis of prefix %s prefix %s", branches, prefix)
     return [branch for branch in branches if branch.startswith(prefix)]
 
 
-def _print_branches(branches_to_remove):
-    if len(branches_to_remove):
-        print(str(len(branches_to_remove)) + " branches to be removed:\n- " + '\n- '.join(branches_to_remove))
-    else:
-        print("Your repository is clean. No branch to remove :)")
+def _print_branches(branches_to_remove, type_, list_flag):
+    if branches_to_remove and list_flag:
+        print(str(len(branches_to_remove)) + " " + type_ + " branches to be removed:\n- " +
+              '\n- '.join(branches_to_remove))
+    elif not list_flag and branches_to_remove:
+        print(str(len(branches_to_remove)) + " " + type_ + " branches removing:\n- " +
+              '\n- '.join(branches_to_remove))
+    print("Your repository is clean. No branch to remove :)")
 
 
-def view_and_delete_branches(list_flag, branch_name, prefix, suffix, remote_flag, local_flag, time_to_remove):
+def view_and_delete_branches(list_flag, branch_name, prefix, suffix, regex, remote_flag, local_flag, time_to_remove):
     if remote_flag:
-        branches_to_remove = filter_time(
-            filter_suffix(filter_prefix(get_merged_branches(branch_name, remote_flag), prefix), suffix),
-            time_to_remove, remote_flag)
+        branches_to_remove = filter_regex(filter_time(filter_suffix(filter_prefix(
+            get_merged_branches(branch_name, remote_flag), prefix), suffix), time_to_remove, remote_flag), regex)
         if DEBUG:
             logger.debug("Viewing remote %s delete flag %s", branches_to_remove, not list_flag)
-        _print_branches(branches_to_remove)
+        _print_branches(branches_to_remove, "remote", list_flag)
         if not list_flag:
             delete_remote_merged_branches(branches_to_remove)
     if local_flag:
-        branches_to_remove = filter_time(
-            filter_suffix(filter_prefix(get_merged_branches(branch_name), prefix), suffix), time_to_remove, remote_flag)
+        branches_to_remove = filter_regex(filter_time(filter_suffix(filter_prefix(
+            get_merged_branches(branch_name), prefix), suffix), time_to_remove, remote_flag), regex)
         if DEBUG:
             logger.debug("Viewing local branches %s delete flag %s", branches_to_remove, not list_flag)
-        _print_branches(branches_to_remove)
+        _print_branches(branches_to_remove, "local", list_flag)
         if not list_flag:
             delete_local_merged_branches(branches_to_remove)
 
@@ -133,6 +141,8 @@ def _get_parser():
                         help='Filter branches based on prefix')
     parser.add_argument('-suf', '--suffix', metavar='suffix', type=str, default='',
                         help='Filter branches based on suffix')
+    parser.add_argument('-re', '--regex', metavar='regex', type=str, default='',
+                        help='Filter branches based on regex')
     return parser
 
 
@@ -150,11 +160,16 @@ def command_line_runner():
         if not args['branch']:
             cmd = 'git branch | grep \* | cut -d \' \' -f2'
             args['branch'] = os.popen(cmd).read().strip()
-        view_and_delete_branches(args['list'], args['branch'], args['prefix'], args['suffix'],
+        view_and_delete_branches(args['list'], args['branch'], args['prefix'], args['suffix'], args['regex'],
                                  args['remote'], args['local'], args['time'])
+    elif args['list']:
+        if not args['branch']:
+            cmd = 'git branch | grep \* | cut -d \' \' -f2'
+            args['branch'] = os.popen(cmd).read().strip()
+        view_and_delete_branches(args['list'], args['branch'], args['prefix'], args['suffix'], args['regex'],
+                                 1, 1, args['time'])
     else:
         parser.print_help()
-    return
 
 
 if __name__ == '__main__':
