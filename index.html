@@ -41,22 +41,26 @@
           -pre prefix, --prefix prefix
                                 Filter branches based on prefix
           -suf suffix, --suffix suffix
-                                Filter branches based on suffix</code></pre>
+                                Filter branches based on suffix
+          -re regex, --regex regex
+                                    Filter branches based on regex</code></pre>
 <h1 id="examples">Examples:</h1>
 <ul>
 <li><p>For listing remote merged branches which haven’t been touched since past 3 months (last commit was 3 months ago)</p>
 <pre><code>    git-del-br -ls -r -t=90</code></pre></li>
 </ul><ul>
 <li><p>For deleting those branches</p>
-<pre><code>        git-del-br -r -t=90</code></pre></li></ul>
+<pre><code>    git-del-br -r -t=90</code></pre></li></ul>
 <ul>
 <li><p>For listing local branches which start with <code>dev</code> prefix</p>
 <pre><code>    git-del-br -ls -l -pre=&#39;dev&#39;</code></pre></li>
 </ul>
         <ul>
 <li><p>For deleting those branches</p>
-<pre><code>        git-del-br -l -pre=&#39;dev&#39;</code></pre></li></ul>
-<h1 id="install">INSTALL:</h1>
+<pre><code>    git-del-br -l -pre=&#39;dev&#39;</code></pre>
+<li><p>You can use regex too. For example: For deleting all branches except `release` branch:</p>
+<pre><code>    git-del-br -l -re='^(?!release).*'</code></pre></li></ul>
+        <h1 id="install">INSTALL:</h1>
 <p>You can install this from pip using <code>pip install git-del-br</code>.</p>
 <h1 id="contribution">CONTRIBUTION:</h1>
 <p>Fork the project. Create a branch from <code>master</code> or <code>gh-pages</code> and submit a PR to the same.</p>
