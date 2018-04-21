@@ -10,6 +10,7 @@ DEBUG = os.environ.get('DEBUG')
 if DEBUG is not None:
     DEBUG = int(DEBUG)
 
+logger = None
 if DEBUG:
     logger = logging.getLogger('git_del_br')
     FORMAT = "%(asctime)-15s:@%(lineno)s %(message)s"
@@ -28,7 +29,6 @@ def delete_remote_merged_branches(branches):
         answer = os.popen(cmd).read()
         if DEBUG:
             logger.debug("%s", answer)
-    pass
 
 
 def delete_local_merged_branches(branches):
@@ -51,8 +51,7 @@ def get_merged_branches(branch_name, remote_flag=False):
     answer = os.popen(cmd).read()
     if remote_flag:
         return [''.join(branch.split('origin/')[1:]) for branch in [i.strip() for i in answer.split('\n') if i]]
-    else:
-        return [i.strip() for i in answer.split('\n') if i]
+    return [i.strip() for i in answer.split('\n') if i]
 
 
 def filter_time(branches, time_to_remove, remote_flag):
@@ -91,14 +90,13 @@ def filter_prefix(branches, prefix):
 
 
 def _print_branches(branches_to_remove, type_, list_flag):
-    if len(branches_to_remove) and list_flag:
+    if branches_to_remove and list_flag:
         print(str(len(branches_to_remove)) + " " + type_ + " branches to be removed:\n- " +
               '\n- '.join(branches_to_remove))
-    elif not list_flag and len(branches_to_remove):
+    elif not list_flag and branches_to_remove:
         print(str(len(branches_to_remove)) + " " + type_ + " branches removing:\n- " +
               '\n- '.join(branches_to_remove))
-    else:
-        print("Your repository is clean. No branch to remove :)")
+    print("Your repository is clean. No branch to remove :)")
 
 
 def view_and_delete_branches(list_flag, branch_name, prefix, suffix, regex, remote_flag, local_flag, time_to_remove):
@@ -172,7 +170,6 @@ def command_line_runner():
                                  1, 1, args['time'])
     else:
         parser.print_help()
-    return
 
 
 if __name__ == '__main__':
