@@ -5,10 +5,9 @@
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/tusharmakkar08/git-del-br/master/LICENSE)
 [![PyPI](https://img.shields.io/pypi/v/git-del-br.svg?maxAge=2592000)](https://pypi.python.org/pypi/git-del-br)
 
-Deleting Merged Branches 
+> Deleting Merged Branches
 
-Usage:
-======
+# Usage:
 
             usage: git_del_br.py [-h] [-ls] [-r] [-l] [-a] [-t time] [-br branch]
                      [-pre prefix] [-suf suffix] [-re regex]
@@ -36,8 +35,7 @@ Usage:
 
 You can find more details about the project [here](http://tusharmakkar08.github.io/git-del-br).
 
-Examples:
-==========
+## Examples
 
 * For listing remote merged branches which haven't been touched since past 3 months (last commit was 3 months ago)
 
@@ -59,17 +57,14 @@ Examples:
 
         git-del-br -l -re='^(?!release).*'
 
-INSTALL:
-========
+## INSTALL
 
 You can install this from pip using `pip install git-del-br`.
 
-CONTRIBUTION:
-============
+## CONTRIBUTION
 
 Fork the project. Create a branch from `master` or `gh-pages` and submit a PR to the same. 
 
-LICENSE:
-========
+## LICENSE
 
 The mighty MIT license. Please check `LICENSE` for more details.
